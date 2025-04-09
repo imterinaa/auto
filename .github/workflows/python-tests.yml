@@ -18,7 +18,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install selenium pytest webdriver-manager pytest-html
+        pip install selenium pytest allure-pytest webdriver-manager pytest-html
         
     - name: Install Chrome and ChromeDriver
       run: |
@@ -31,13 +31,29 @@ jobs:
         
     - name: Run tests
       run: |
-        python -m pytest tests/ -v --html=report.html
+        python -m pytest tests/ -v --alluredir=allure-results
       env:
         DISPLAY: :99
         
-    - name: Upload test report
-      uses: actions/upload-artifact@v4
+    - name: Generate Allure report
+      if: always()
+      run: |
+        curl -Lo allure-2.24.0.tgz https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.24.0/allure-commandline-2.24.0.tgz
+        tar -zxvf allure-2.24.0.tgz -C /opt/
+        ln -s /opt/allure-2.24.0/bin/allure /usr/local/bin/allure
+        allure generate allure-results -o allure-report --clean
+        
+    - name: Upload report
+      uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: test-report
-        path: report.html
+        name: allure-report
+        path: allure-report
+  
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./allure-report
+    
