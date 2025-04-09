@@ -1,10 +1,11 @@
-name: Python Tests
+name: SauceDemo Tests
 
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
     - uses: actions/checkout@v4
@@ -19,13 +20,24 @@ jobs:
         python -m pip install --upgrade pip
         pip install selenium pytest webdriver-manager
         
-    - name: Install Chrome
+    - name: Install Chrome and ChromeDriver
       run: |
         sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
+        sudo apt-get install -y wget
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+        sudo apt-get install -y chromium-chromedriver
         
     - name: Run tests
       run: |
-        python -m pytest tests/ -v
+        python -m pytest tests/ -v --html=report.html
       env:
         DISPLAY: :99
+        CHROME_HEADLESS: "true"
+        
+    - name: Upload test report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-report
+        path: report.html
