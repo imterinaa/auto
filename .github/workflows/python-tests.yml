@@ -27,10 +27,6 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y chromium-chromedriver
-        
-        google-chrome --version
-        chromedriver --version
-        
         sudo ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver
         
     - name: Run tests
@@ -38,7 +34,6 @@ jobs:
         python -m pytest tests/ -v --html=report.html
       env:
         DISPLAY: :99
-        CHROME_HEADLESS: "true"
         
     - name: Upload test report
       uses: actions/upload-artifact@v4
