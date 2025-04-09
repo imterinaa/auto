@@ -1,18 +1,43 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import allure
+from pages.SauceDemoPage import SauceDemoPage
 
-class SauceDemoPage:
-    def __init__(self, driver):
-        self.driver = driver
-
-    def login(self, username, password):
-        self.driver.find_element(By.ID, "user-name").send_keys(username)
-        self.driver.find_element(By.ID, "password").send_keys(password)
-        self.driver.find_element(By.ID, "login-button").click()
-
-    def add_to_cart(self, item_id):
-        self.driver.find_element(By.ID, f"add-to-cart-{item_id}").click()
-
-    def get_cart_count(self):
-        return self.driver.find_element(By.CLASS_NAME, "shopping_cart_badge").text
+@allure.epic("SauceDemo Tests")
+@allure.feature("Корзина покупок")
+@allure.story("Добавление товара в корзину")
+def test_pom(browser):
+    """Тест добавления товара в корзину с использованием Page Object Model"""
+    
+    page = SauceDemoPage(browser)
+    
+    with allure.step("1. Открыть главную страницу"):
+        browser.get("https://www.saucedemo.com/")
+        allure.attach(
+            browser.get_screenshot_as_png(),
+            name="Main Page",
+            attachment_type=allure.attachment_type.PNG
+        )
+    
+    with allure.step("2. Выполнить авторизацию"):
+        page.login("standard_user", "secret_sauce")
+        allure.attach(
+            browser.get_screenshot_as_png(),
+            name="After Login",
+            attachment_type=allure.attachment_type.PNG
+        )
+    
+    with allure.step("3. Добавить товар в корзину"):
+        page.add_to_cart("sauce-labs-backpack")
+        allure.attach(
+            browser.get_screenshot_as_png(),
+            name="Item Added",
+            attachment_type=allure.attachment_type.PNG
+        )
+    
+    with allure.step("4. Проверить счетчик корзины"):
+        cart_count = page.get_cart_count()
+        allure.attach(
+            f"Текущее значение счетчика: {cart_count}",
+            name="Cart Counter",
+            attachment_type=allure.attachment_type.TEXT
+        )
+        assert cart_count == "1", "Счетчик корзины должен показывать 1 товар"
