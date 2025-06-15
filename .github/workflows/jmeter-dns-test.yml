@@ -1,0 +1,22 @@
+name: JMeter DNS Load Test
+on:
+  workflow_dispatch:
+
+jobs:
+  jmeter-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run JMeter Test
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        with:
+          testFilePath: "dns_test.jmx"
+          outputReportsFolder: "reports/"
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jmeter-dns-report
+          path: reports/
