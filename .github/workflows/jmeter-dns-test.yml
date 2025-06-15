@@ -1,9 +1,28 @@
-name: Test Workflow
+name: JMeter DNS Load Test
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [ * ]
+  pull_request: {}
+  workflow_dispatch:
 
 jobs:
-  test:
+  jmeter-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
     steps:
-      - run: echo "Workflow is working!"
+      - uses: actions/checkout@v4
+
+      - name: Run JMeter Test
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        with:
+          testFilePath: "dns_test.jmx"
+          outputReportsFolder: "reports/"
+          jmeterVersion: "5.6.2"
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: jmeter-report
+          path: reports/
