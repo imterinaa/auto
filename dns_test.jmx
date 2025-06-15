@@ -8,12 +8,10 @@
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
-          <stringProp name="HTTPSampler.domain">example.com</stringProp>
-          <stringProp name="HTTPSampler.port">443</stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">/</stringProp>
-        </HTTPSamplerProxy>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DNS over HTTPS" enabled="true">
+            <stringProp name="HTTPSampler.domain">dns.google.com</stringProp>
+            <stringProp name="HTTPSampler.path">/resolve?name=google.com&amp;type=A</stringProp>
+          </HTTPSamplerProxy>
         <hashTree/>
         <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <stringProp name="filename">result.jtl</stringProp>
