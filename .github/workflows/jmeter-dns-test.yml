@@ -1,6 +1,7 @@
 name: JMeter DNS Load Test
 on:
-  workflow_dispatch:
+  push:
+    branches: [ 'JMeter+GithubActions' ]
 
 jobs:
   jmeter-test:
