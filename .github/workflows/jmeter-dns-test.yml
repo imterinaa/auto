@@ -15,11 +15,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run JMeter Test
-        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        uses: rbhadti94/apache-jmeter-action@v0.7.0
         with:
           testFilePath: "dns_test.jmx"
           outputReportsFolder: "reports/"
-          jmeterVersion: "5.6.2"
 
       - uses: actions/upload-artifact@v4
         if: always()
