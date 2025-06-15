@@ -1,21 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.2">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true"/>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Sample HTTP Test" enabled="true">
+      <stringProp name="TestPlan.comments">Тест доступности сайта</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+    </TestPlan>
     <hashTree>
+      
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">5</stringProp>  <!-- 5 пользователей -->
+        <stringProp name="ThreadGroup.ramp_time">10</stringProp>  <!-- Запускать за 10 сек -->
+        <longProp name="ThreadGroup.start_time">1750020000000</longProp>
+        <longProp name="ThreadGroup.end_time">1750020000000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
       </ThreadGroup>
       <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DNS over HTTPS" enabled="true">
-            <stringProp name="HTTPSampler.domain">dns.google.com</stringProp>
-            <stringProp name="HTTPSampler.path">/resolve?name=google.com&amp;type=A</stringProp>
-          </HTTPSamplerProxy>
-        <hashTree/>
-        <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="Summary Report" enabled="true">
-          <stringProp name="filename">result.jtl</stringProp>
+        
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+          <stringProp name="HTTPSampler.domain">example.com</stringProp>  <!-- Тестируемый домен -->
+          <stringProp name="HTTPSampler.port">443</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/</stringProp>  <!-- Путь -->
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Check Status" enabled="true">
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <stringProp name="Assertion.test_type">16</stringProp>  <!-- Equals -->
+            <stringProp name="Assertion.custom_message">Status not 200</stringProp>
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="0">200</stringProp>
+            </collectionProp>
+          </ResponseAssertion>
+        </hashTree>
+        
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <stringProp name="filename">results/summary.csv</stringProp>
         </ResultCollector>
+        
+        <ViewResultsFullVisualizer guiclass="ViewResultsFullVisualizer" testclass="ViewResultsFullVisualizer" testname="View Results" enabled="true"/>
       </hashTree>
     </hashTree>
   </hashTree>
