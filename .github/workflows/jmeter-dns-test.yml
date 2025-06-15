@@ -21,7 +21,7 @@ jobs:
           outputReportsFolder: "reports/"
           jmeterVersion: "5.6.2"
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: jmeter-report
