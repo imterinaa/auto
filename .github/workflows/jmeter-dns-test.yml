@@ -1,50 +1,21 @@
-name: JMeter Test
-
-on: [push, workflow_dispatch]
+name: Run JMeter Test
+on:
+ push:
+   branches: [ "*" ]
+ workflow_dispatch:
 
 jobs:
-  jmeter-test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+ jmeter-test:
+   runs-on: ubuntu-latest
 
-    - name: Set up Java 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+   steps:
+     - uses: actions/checkout@v4
 
-    - name: Install JMeter
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jmeter
-        
-    - name: Install DNS Plugin (если нужно)
-      run: |
-        wget https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-dns/0.5/jmeter-plugins-dns-0.5.jar
-        sudo mv jmeter-plugins-dns-0.5.jar /usr/share/jmeter/lib/ext/
+     - name: Install Python, Java Runtime and Taurus
+       run: |
+         sudo apt update
+         sudo apt install python3 default-jre-headless python3-tk python3-pip python3-dev libxml2-dev libxslt-dev zlib1g-dev net-tools
+         sudo python3 -m pip install bzt
 
-    - name: Run JMeter Test
-      run: |
-        mkdir -p reports
-        jmeter -n -t dns_test.jmx -l results.jtl -j debug.log
-        if [ -s results.jtl ]; then
-          jmeter -g results.jtl -o reports/
-        else
-          echo "Error: No results in results.jtl"
-          cat debug.log
-          exit 1
-        fi
-
-    - name: Upload Report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: jmeter-report
-        path: |
-          reports/
-          debug.log
-          results.jtl
+     - name: Run JMeter Test
+       run: bzt test.jmx
