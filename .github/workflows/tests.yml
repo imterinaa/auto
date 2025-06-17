@@ -26,10 +26,12 @@ jobs:
     - name: Install Chrome
       uses: browser-actions/setup-chrome@v1
       
-    - name: Install Allure
+    - name: Install Allure via npm
       run: |
         sudo apt-get update
-        sudo apt-get install allure
+        curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+        sudo npm install -g allure-commandline
 
     - name: Run tests
       run: |
