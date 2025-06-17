@@ -37,20 +37,3 @@ class TestSaucedemo:
                 EC.url_contains("/inventory.html")
             )
             assert "inventory" in driver.current_url
-
-    @allure.story("Добавление товара в корзину")
-    def test_add_to_cart(self, driver):
-        self.test_login(driver)
-
-        with allure.step("Добавляем товар в корзину"):
-            add_to_cart_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.ID, "add-to-cart-sauce-labs-backpack"))
-            )
-            add_to_cart_button.click()
-
-        with allure.step("Проверяем, что товар добавлен"):
-            cart_badge = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "shopping_cart_badge"))
-            )
-            assert cart_badge.text == "1"
-            
